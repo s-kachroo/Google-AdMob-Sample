@@ -35,11 +35,6 @@
         </activity>
 
         <activity
-            android:name="com.example.admobnativeadspoc.NativeActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AdMobNativeAdsPOC" />
-
-        <activity
             android:name="com.example.admobnativeadspoc.NativeComposeActivity"
             android:exported="true"
             android:theme="@style/Theme.AdMobNativeAdsPOC" />

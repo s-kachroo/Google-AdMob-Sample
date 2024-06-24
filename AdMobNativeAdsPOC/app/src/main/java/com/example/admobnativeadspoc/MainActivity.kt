@@ -26,9 +26,6 @@ import com.example.admobnativeadspoc.ui.TextButton
 import com.example.admobnativeadspoc.ui.theme.AdMobNativeAdsPOCTheme
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
-import com.example.admobnativeadspoc.ui.theme.ColorStateError
-import com.example.admobnativeadspoc.ui.theme.ColorStateLoaded
-import com.example.admobnativeadspoc.ui.theme.ColorStateUnloaded
 import com.google.android.ump.ConsentDebugSettings
 import com.google.android.ump.ConsentRequestParameters
 
@@ -58,8 +55,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun initMobileAds() {
-        val testDeviceIds =
-            listOf("33BE2250B43518CCDA7DE426D04EE231", "E26A1BFBBB752412C5107EBD51F0340F")
+        val testDeviceIds = listOf("E26A1BFBBB752412C5107EBD51F0340F")
 
         // Configure RequestConfiguration.
         val configuration = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
@@ -131,12 +127,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                // Native Sample.
-                TextButton(name = "Native Layout", enabled = adsManager.canRequestAds.value) {
-                    val intent = Intent(context, NativeActivity::class.java)
-                    context.startActivity(intent)
-                }
-
                 // Native Compose Sample.
                 TextButton(name = "Native Compose", enabled = adsManager.canRequestAds.value) {
                     val intent = Intent(context, NativeComposeActivity::class.java)
@@ -148,11 +138,11 @@ class MainActivity : ComponentActivity() {
 
     private fun @GoogleMobileAdsManager.MobileAdsState.State Int.messageColor(): Color {
         return when (this) {
-            GoogleMobileAdsManager.MobileAdsState.CONSENT_OBTAINED -> ColorStateUnloaded
-            GoogleMobileAdsManager.MobileAdsState.CONSENT_REQUEST_ERROR -> ColorStateError
-            GoogleMobileAdsManager.MobileAdsState.CONSENT_FORM_ERROR -> ColorStateError
-            GoogleMobileAdsManager.MobileAdsState.INITIALIZED -> ColorStateLoaded
-            else -> ColorStateUnloaded
+            GoogleMobileAdsManager.MobileAdsState.CONSENT_OBTAINED -> Color.Yellow
+            GoogleMobileAdsManager.MobileAdsState.CONSENT_REQUEST_ERROR -> Color.Red
+            GoogleMobileAdsManager.MobileAdsState.CONSENT_FORM_ERROR -> Color.Red
+            GoogleMobileAdsManager.MobileAdsState.INITIALIZED -> Color.Green
+            else -> Color.Yellow
         }
     }
 

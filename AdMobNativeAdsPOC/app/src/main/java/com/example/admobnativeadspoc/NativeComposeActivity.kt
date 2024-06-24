@@ -35,15 +35,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
-import com.example.admobnativeadspoc.ui.theme.AdMobNativeAdsPOCTheme
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.nativead.NativeAd
 import com.example.admobnativeadspoc.composables.NativeAdBodyView
 import com.example.admobnativeadspoc.composables.NativeAdCallToActionView
 import com.example.admobnativeadspoc.composables.NativeAdChoicesView
@@ -55,9 +52,10 @@ import com.example.admobnativeadspoc.composables.NativeAdStarRatingView
 import com.example.admobnativeadspoc.composables.NativeAdState
 import com.example.admobnativeadspoc.composables.NativeAdStoreView
 import com.example.admobnativeadspoc.composables.NativeAdView
-import com.example.admobnativeadspoc.ui.theme.ColorStateError
-import com.example.admobnativeadspoc.ui.theme.ColorStateLoaded
-import com.example.admobnativeadspoc.ui.theme.ColorStateUnloaded
+import com.example.admobnativeadspoc.ui.theme.AdMobNativeAdsPOCTheme
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.nativead.NativeAd
 
 
 class NativeComposeActivity : ComponentActivity() {
@@ -93,7 +91,7 @@ class NativeComposeActivity : ComponentActivity() {
         // Cache the mutable state for our notification bar.
         val context = LocalContext.current
         var messageText by remember { mutableStateOf("Native ad is not loaded.") }
-        var messageColor by remember { mutableStateOf(ColorStateUnloaded) }
+        var messageColor by remember { mutableStateOf(Color.Yellow) }
 
         // Cache the native ad so that we can apply it to our view elements.
         val nativeAd = remember { mutableStateOf<NativeAd?>(null) }
@@ -103,24 +101,33 @@ class NativeComposeActivity : ComponentActivity() {
             adUnitId = AD_UNIT_ID,
             adRequest = AdRequest.Builder().build(),
             onAdLoaded = {
-                messageColor = ColorStateLoaded
+                messageColor = Color.Green
                 messageText = "Native ad is loaded."
                 Log.i(TAG, messageText)
             },
             onAdFailedToLoad = { error: LoadAdError ->
-                messageColor = ColorStateError
+                messageColor = Color.Red
                 messageText = "Native ad failed to load with error: ${error.message}"
                 Log.e(TAG, messageText)
             },
-            onAdImpression = { Log.i(TAG, "Native ad impression") },
-            onAdClicked = { Log.i(TAG, "Native ad clicked") },
-            onAdOpened = { Log.i(TAG, "Native ad opened") },
-            onAdClosed = { Log.i(TAG, "Native ad closed.") },
+            onAdImpression = {
+                Log.i(TAG, "Native ad impression")
+            },
+            onAdClicked = {
+                Log.i(TAG, "Native ad clicked")
+            },
+            onAdOpened = {
+                Log.i(TAG, "Native ad opened")
+            },
+            onAdClosed = {
+                Log.i(TAG, "Native ad closed.")
+            },
         )
+
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState()),
             content = {
-                // Render title.
+                // render title
                 TopAppBar(
                     title = { Text(text = "Native Compose") },
                     navigationIcon = {
@@ -133,7 +140,7 @@ class NativeComposeActivity : ComponentActivity() {
                     },
                 )
 
-                // Render ad status.
+                // render ad status box
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -142,7 +149,7 @@ class NativeComposeActivity : ComponentActivity() {
                     Text(text = messageText, style = MaterialTheme.typography.bodyLarge)
                 }
 
-                // Native ad composable.
+                // native ad composable
                 Box(
                     modifier = Modifier
                         .padding(8.dp)
@@ -155,6 +162,7 @@ class NativeComposeActivity : ComponentActivity() {
                                 .wrapContentHeight(Alignment.Top)
                         ) {
                             NativeAdChoicesView()
+
                             Row {
                                 NativeAdIconView(Modifier.padding(5.dp)) {
                                     nativeAd.value?.icon?.let {
@@ -164,6 +172,7 @@ class NativeComposeActivity : ComponentActivity() {
                                     }
 
                                 }
+
                                 Column {
                                     NativeAdHeadlineView {
                                         nativeAd.value?.headline?.let {
@@ -173,6 +182,7 @@ class NativeComposeActivity : ComponentActivity() {
                                             )
                                         }
                                     }
+
                                     NativeAdStarRatingView {
                                         nativeAd.value?.starRating?.let {
                                             Text(
@@ -183,13 +193,20 @@ class NativeComposeActivity : ComponentActivity() {
                                     }
                                 }
                             }
-                            NativeAdBodyView { nativeAd.value?.body?.let { Text(text = it) } }
+
+                            NativeAdBodyView {
+                                nativeAd.value?.body?.let {
+                                    Text(text = it)
+                                }
+                            }
+
                             NativeAdMediaView(
                                 Modifier
                                     .fillMaxWidth()
                                     .height(500.dp)
                                     .fillMaxHeight()
                             )
+
                             Row(
                                 Modifier
                                     .align(Alignment.End)
@@ -202,6 +219,7 @@ class NativeComposeActivity : ComponentActivity() {
                                 ) {
                                     nativeAd.value?.price?.let { Text(text = it) }
                                 }
+
                                 NativeAdStoreView(
                                     Modifier
                                         .padding(5.dp)
@@ -209,7 +227,10 @@ class NativeComposeActivity : ComponentActivity() {
                                 ) {
                                     nativeAd.value?.store?.let { Text(text = it) }
                                 }
-                                NativeAdCallToActionView(Modifier.padding(5.dp)) {
+
+                                NativeAdCallToActionView(
+                                    Modifier.padding(5.dp)
+                                ) {
                                     nativeAd.value?.callToAction?.let {
                                         Button(onClick = {}) {
                                             Text(
