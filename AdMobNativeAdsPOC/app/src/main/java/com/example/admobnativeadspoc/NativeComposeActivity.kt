@@ -1,6 +1,5 @@
 package com.example.admobnativeadspoc
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -8,27 +7,25 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,7 +55,6 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.nativead.NativeAd
 
-
 class NativeComposeActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,7 +82,6 @@ class NativeComposeActivity : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
     @Composable
     fun NativeLayoutScreen() {
         // Cache the mutable state for our notification bar.
@@ -125,136 +120,122 @@ class NativeComposeActivity : ComponentActivity() {
             },
         )
 
-        Column(
-            modifier = Modifier.verticalScroll(rememberScrollState()),
-            content = {
-                // render title
-                TopAppBar(
-                    title = { Text(text = "Native Compose") },
-                    navigationIcon = {
-                        IconButton(onClick = {
-                            val intent = Intent(context, MainActivity::class.java)
-                            context.startActivity(intent)
-                        }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+        Log.i(TAG, "NativeLayoutScreen: $messageText")
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+        ) {
+            NativeAdView(nativeAdState = nativeState, nativeAdReference = nativeAd) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp)
+                ) {
+                    // native ad composable components
+                    NativeAdChoicesView()
+
+                    Row {
+                        NativeAdIconView(Modifier.padding(5.dp)) {
+                            nativeAd.value?.icon?.let {
+                                nativeAd.value?.icon?.drawable?.toBitmap()?.let { bitmap ->
+                                    Image(
+                                        bitmap = bitmap.asImageBitmap(), contentDescription = "Icon"
+                                    )
+                                }
+                            }
                         }
-                    },
-                )
 
-                // render ad status box
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(messageColor)
-                ) {
-                    Text(text = messageText, style = MaterialTheme.typography.bodyLarge)
-                }
-
-                // native ad composable box
-                Box(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .wrapContentHeight(Alignment.Top)
-                ) {
-                    NativeAdView(nativeAdState = nativeState, nativeAdReference = nativeAd) {
                         Column(
-                            Modifier
-                                .align(Alignment.TopStart)
-                                .wrapContentHeight(Alignment.Top)
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 8.dp)
                         ) {
-                            // native ad composable components
-                            NativeAdChoicesView()
-
-                            Row {
-                                NativeAdIconView(Modifier.padding(5.dp)) {
-                                    nativeAd.value?.icon?.let {
-                                        nativeAd.value?.icon?.drawable?.toBitmap()?.let { it1 ->
-                                            Image(bitmap = it1.asImageBitmap(), "Icon")
-                                        }
-                                    }
-                                }
-
-                                Column {
-                                    NativeAdHeadlineView {
-                                        nativeAd.value?.headline?.let {
-                                            Text(
-                                                text = it,
-                                                style = MaterialTheme.typography.headlineLarge
-                                            )
-                                        }
-                                    }
-
-                                    NativeAdStarRatingView {
-                                        nativeAd.value?.starRating?.let {
-                                            Text(
-                                                text = "Rated $it",
-                                                style = MaterialTheme.typography.labelMedium
-                                            )
-                                        }
-                                    }
+                            NativeAdHeadlineView {
+                                nativeAd.value?.headline?.let {
+                                    Text(
+                                        text = it, style = MaterialTheme.typography.headlineLarge
+                                    )
                                 }
                             }
 
-                            NativeAdBodyView(
-                                Modifier
-                                    .padding(1.dp)
-                            ) {
-                                nativeAd.value?.body?.let {
+                            NativeAdStarRatingView {
+                                nativeAd.value?.starRating?.let {
+                                    Text(
+                                        text = "Rated $it",
+                                        style = MaterialTheme.typography.labelMedium
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    NativeAdBodyView(
+                        modifier = Modifier.padding(1.dp)
+                    ) {
+                        nativeAd.value?.body?.let {
+                            Text(text = it)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    NativeAdMediaView(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        modifier = Modifier.align(Alignment.End),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        NativeAdPriceView(
+                            modifier = Modifier.padding(5.dp)
+                        ) {
+                            nativeAd.value?.price?.let {
+                                Text(text = it)
+                            }
+                        }
+
+                        NativeAdStoreView(
+                            modifier = Modifier.padding(5.dp)
+                        ) {
+                            nativeAd.value?.store?.let {
+                                Text(text = it)
+                            }
+                        }
+
+                        NativeAdCallToActionView(modifier = Modifier.padding(5.dp)) {
+                            nativeAd.value?.callToAction?.let {
+                                Button(onClick = {
+                                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                                }) {
                                     Text(text = it)
-                                }
-                            }
-
-                            NativeAdMediaView(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .height(200.dp)
-                                    .fillMaxHeight()
-                            )
-
-                            Row(
-                                Modifier
-                                    .align(Alignment.End)
-                                    .padding(5.dp)
-                            ) {
-                                NativeAdPriceView(
-                                    Modifier
-                                        .padding(5.dp)
-                                        .align(Alignment.CenterVertically)
-                                ) {
-                                    nativeAd.value?.price?.let {
-                                        Text(text = it)
-                                    }
-                                }
-
-                                NativeAdStoreView(
-                                    Modifier
-                                        .padding(5.dp)
-                                        .align(Alignment.CenterVertically)
-                                ) {
-                                    nativeAd.value?.store?.let {
-                                        Text(text = it)
-                                    }
-                                }
-
-                                NativeAdCallToActionView(
-                                    Modifier.padding(5.dp)
-                                ) {
-                                    nativeAd.value?.callToAction?.let {
-                                        Button(onClick = {
-                                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                                        }) {
-                                            Text(
-                                                text = it
-                                            )
-                                        }
-                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-        )
+
+            IconButton(
+                onClick = {
+                    (context as? ComponentActivity)?.finish()
+                }, modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+            ) {
+                Icon(Icons.Filled.Close, contentDescription = "Close")
+            }
+        }
     }
 
     companion object {
