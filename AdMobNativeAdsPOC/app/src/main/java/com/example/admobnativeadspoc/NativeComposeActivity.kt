@@ -3,6 +3,7 @@ package com.example.admobnativeadspoc
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -149,18 +150,19 @@ class NativeComposeActivity : ComponentActivity() {
                     Text(text = messageText, style = MaterialTheme.typography.bodyLarge)
                 }
 
-                // native ad composable
+                // native ad composable box
                 Box(
                     modifier = Modifier
                         .padding(8.dp)
                         .wrapContentHeight(Alignment.Top)
                 ) {
-                    NativeAdView(nativeState, nativeAdReference = nativeAd) {
+                    NativeAdView(nativeAdState = nativeState, nativeAdReference = nativeAd) {
                         Column(
                             Modifier
                                 .align(Alignment.TopStart)
                                 .wrapContentHeight(Alignment.Top)
                         ) {
+                            // native ad composable components
                             NativeAdChoicesView()
 
                             Row {
@@ -170,7 +172,6 @@ class NativeComposeActivity : ComponentActivity() {
                                             Image(bitmap = it1.asImageBitmap(), "Icon")
                                         }
                                     }
-
                                 }
 
                                 Column {
@@ -194,7 +195,10 @@ class NativeComposeActivity : ComponentActivity() {
                                 }
                             }
 
-                            NativeAdBodyView {
+                            NativeAdBodyView(
+                                Modifier
+                                    .padding(1.dp)
+                            ) {
                                 nativeAd.value?.body?.let {
                                     Text(text = it)
                                 }
@@ -203,7 +207,7 @@ class NativeComposeActivity : ComponentActivity() {
                             NativeAdMediaView(
                                 Modifier
                                     .fillMaxWidth()
-                                    .height(500.dp)
+                                    .height(200.dp)
                                     .fillMaxHeight()
                             )
 
@@ -217,7 +221,9 @@ class NativeComposeActivity : ComponentActivity() {
                                         .padding(5.dp)
                                         .align(Alignment.CenterVertically)
                                 ) {
-                                    nativeAd.value?.price?.let { Text(text = it) }
+                                    nativeAd.value?.price?.let {
+                                        Text(text = it)
+                                    }
                                 }
 
                                 NativeAdStoreView(
@@ -225,14 +231,18 @@ class NativeComposeActivity : ComponentActivity() {
                                         .padding(5.dp)
                                         .align(Alignment.CenterVertically)
                                 ) {
-                                    nativeAd.value?.store?.let { Text(text = it) }
+                                    nativeAd.value?.store?.let {
+                                        Text(text = it)
+                                    }
                                 }
 
                                 NativeAdCallToActionView(
                                     Modifier.padding(5.dp)
                                 ) {
                                     nativeAd.value?.callToAction?.let {
-                                        Button(onClick = {}) {
+                                        Button(onClick = {
+                                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                                        }) {
                                             Text(
                                                 text = it
                                             )
@@ -243,7 +253,7 @@ class NativeComposeActivity : ComponentActivity() {
                         }
                     }
                 }
-            },
+            }
         )
     }
 

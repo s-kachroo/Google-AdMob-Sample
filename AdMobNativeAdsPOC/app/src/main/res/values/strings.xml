@@ -2,7 +2,7 @@
     <string name="app_name">AdMobNativeAdsPOC</string>
     <string name="ad">Ad</string>
 
-    <string name="main_title">Google Mobile Ads Sample</string>
+    <string name="main_title">Google Mobile Native Ads Sample</string>
     <string name="mobileads_uninitialized">Google Mobile Ads SDK is not initialized.</string>
     <string name="mobileads_consentRequired">Google Mobile Ads SDK requires consent.</string>
     <string name="mobileads_consentObtained">Google Mobile Ads SDK obtained consent.</string>

@@ -12,6 +12,9 @@ import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.FormError
 import com.google.android.ump.UserMessagingPlatform
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 
 class GoogleMobileAdsManager {
@@ -129,9 +132,13 @@ class GoogleMobileAdsManager {
      * @param activity Activity responsible for initializing the Google Mobile Ads SDK.
      */
     private fun initializeMobileAdsSdk(activity: Activity) {
-        MobileAds.initialize(activity) {
-            Log.d(TAG, "Mobile Ads SDK initialized")
-            mobileAdsState.intValue = MobileAdsState.INITIALIZED
+        val backgroundScope = CoroutineScope(Dispatchers.IO)
+        backgroundScope.launch {
+            // Initialize the Google Mobile Ads SDK on a background thread.
+            MobileAds.initialize(activity) {
+                Log.d(TAG, "Mobile Ads SDK initialized")
+                mobileAdsState.intValue = MobileAdsState.INITIALIZED
+            }
         }
     }
 
