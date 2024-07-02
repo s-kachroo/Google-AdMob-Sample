@@ -86,23 +86,24 @@ class NativeComposeActivity : ComponentActivity() {
     fun NativeLayoutScreen() {
         // Cache the mutable state for our notification bar.
         val context = LocalContext.current
-        var messageText by remember { mutableStateOf("Native ad is not loaded.") }
-        var messageColor by remember { mutableStateOf(Color.Yellow) }
-
+        // Cache the whether the native ad is loaded message text.
+        var messageText by remember {
+            mutableStateOf("Native ad is not loaded.")
+        }
         // Cache the native ad so that we can apply it to our view elements.
-        val nativeAd = remember { mutableStateOf<NativeAd?>(null) }
+        val nativeAd = remember {
+            mutableStateOf<NativeAd?>(null)
+        }
 
         // Construct a native state to configure the NativeComposable.
         val nativeState = NativeAdState(
-            adUnitId = AD_UNIT_ID,
+            adUnitId = AD_UNIT_ID_ADMOB,
             adRequest = AdRequest.Builder().build(),
             onAdLoaded = {
-                messageColor = Color.Green
                 messageText = "Native ad is loaded."
                 Log.i(TAG, messageText)
             },
             onAdFailedToLoad = { error: LoadAdError ->
-                messageColor = Color.Red
                 messageText = "Native ad failed to load with error: ${error.message}"
                 Log.e(TAG, messageText)
             },
@@ -188,6 +189,7 @@ class NativeComposeActivity : ComponentActivity() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(300.dp)
+                            .weight(1f)
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -240,6 +242,7 @@ class NativeComposeActivity : ComponentActivity() {
 
     companion object {
         const val TAG = "NativeComposeActivity"
-        const val AD_UNIT_ID = "ca-app-pub-3940256099942544/2247696110"
+        const val AD_UNIT_ID_ADMOB = "ca-app-pub-3940256099942544/2247696110"
+//        const val AD_UNIT_ID_AD_MANAGER = "/6499/example/native"
     }
 }

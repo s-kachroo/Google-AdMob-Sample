@@ -147,6 +147,7 @@ fun NativeAdView(
         modifier = modifier,
     )
 
+    // TODO : improve using implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.2") and stackoverflow.com/questions/66546962/jetpack-compose-how-do-i-refresh-a-screen-when-app-returns-to-foreground
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_DESTROY || event == Lifecycle.Event.ON_STOP) {

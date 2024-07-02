@@ -71,5 +71,4 @@ dependencies {
     implementation(libs.play.services.ads.lite)
     implementation(libs.user.messaging.platform)
     implementation(libs.androidx.material.icons.extended)
-
 }
